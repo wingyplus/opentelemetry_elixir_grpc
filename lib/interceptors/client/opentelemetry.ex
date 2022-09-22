@@ -20,7 +20,7 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
         |> :otel_propagator_text_map.inject(%{}, &set_metadata/3)
 
       stream
-      |> GRPC.Client.Stream.put_headers(metadata)
+      |> Stream.put_headers(metadata)
       |> next.(req)
       |> set_span_attributes(stream)
     end

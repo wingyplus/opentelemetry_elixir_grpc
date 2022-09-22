@@ -78,8 +78,6 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
     ])
 
     Application.start(:opentelemetry)
-
-    %{}
   end
 
   # TODO: Remove this configuration after bump grpc to version 0.6.
