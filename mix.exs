@@ -1,9 +1,9 @@
-defmodule OpentelemetryGrpc.MixProject do
+defmodule OpentelemetryElixirGrpc.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :opentelemetry_grpc,
+      app: :opentelemetry_elixir_grpc,
       version: "0.1.0-dev",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),

@@ -1,4 +1,4 @@
-defmodule OpenTelemetryGRPC do
+defmodule OpenTelemetryElixirGRPC do
   @moduledoc """
   The OpenTelemetry interceptor for Elixir GRPC.
 
