@@ -49,14 +49,17 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
       GRPC.Stub.connect("localhost:50051", interceptors: [GRPC.Client.Interceptors.OpenTelemetry])
 
     request = Routeguide.Point.new(latitude: 1, longitude: 2)
-    Routeguide.RouteGuide.Stub.get_feature(channel, request)
+    # Ensure interceptor still return a result.
+    assert {:ok, %Routeguide.Feature{name: "A"}} =
+             Routeguide.RouteGuide.Stub.get_feature(channel, request)
 
     assert_receive {:span,
                     span(
                       name: "routeguide.RouteGuide/GetFeature",
                       kind: :client,
                       attributes: attributes,
-                      events: events
+                      events: events,
+                      status: status
                     )}
 
     assert {_, _, _, _,
@@ -72,6 +75,8 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
 
     assert {_, _, _, _, _,
             [{:event, _, :message, {:attributes, _, _, _, %{"message.type": "SENT"}}}]} = events
+
+    assert {_, :ok, ""} = status
   end
 
   defp setup_opentelemetry(_context) do

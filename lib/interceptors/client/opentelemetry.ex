@@ -27,6 +27,7 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
       |> Stream.put_headers(metadata)
       |> next.(req)
       |> set_span_attributes(stream)
+      |> set_span_status()
       |> add_message_event()
     end
   end
@@ -47,13 +48,27 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
     reply
   end
 
+  defp set_span_status(reply) do
+    case reply do
+      {:ok, _} ->
+        OpenTelemetry.Tracer.set_status(OpenTelemetry.status(:ok))
+
+      {:error, %GRPC.RPCError{message: message}} ->
+        OpenTelemetry.Tracer.set_status(:error, message)
+    end
+
+    reply
+  end
+
   # NOTE: message.id requires some extra work to increment the counter which's not quite
   # good to do it.
   # QUESTION: How to know compressed size?
-  defp add_message_event(_reply) do
+  defp add_message_event(reply) do
     OpenTelemetry.Tracer.add_event(:message, %{
       "message.type": "SENT"
     })
+
+    reply
   end
 
   defp build_span_attributes(
