@@ -41,7 +41,7 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
 
   defp set_span_attributes(reply, stream) do
     stream
-    |> build_attributes(reply)
+    |> build_span_attributes(reply)
     |> OpenTelemetry.Tracer.set_attributes()
 
     reply
@@ -56,7 +56,7 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
     })
   end
 
-  defp build_attributes(
+  defp build_span_attributes(
          %Stream{
            service_name: service_name,
            method_name: method_name,
