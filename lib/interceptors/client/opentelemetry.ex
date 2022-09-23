@@ -34,28 +34,35 @@ defmodule GRPC.Client.Interceptors.OpenTelemetry do
     "#{service_name}/#{method_name}"
   end
 
-  defp set_span_attributes(result, stream) do
+  defp set_span_attributes(reply, stream) do
     stream
-    |> build_attributes()
+    |> build_attributes(reply)
     |> OpenTelemetry.Tracer.set_attributes()
 
-    result
+    reply
   end
 
-  defp build_attributes(%Stream{
-         service_name: service_name,
-         method_name: method_name,
-         channel: channel
-       }) do
+  defp build_attributes(
+         %Stream{
+           service_name: service_name,
+           method_name: method_name,
+           channel: channel
+         },
+         reply
+       ) do
     %GRPC.Channel{host: host, port: port} = channel
 
     %{
       "rpc.system": :grpc,
       "rpc.service": service_name,
       "rpc.method": method_name,
+      "rpc.grpc.status_code": status_code_from_reply(reply),
       "net.peer.name": host,
       "net.peer.port": port,
       "net.transport": :tcp_ip
     }
   end
+
+  defp status_code_from_reply({:error, %GRPC.RPCError{status: status}}), do: status
+  defp status_code_from_reply(_), do: 0
 end

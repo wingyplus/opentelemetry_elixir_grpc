@@ -65,7 +65,8 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
               "net.transport": :tcp_ip,
               "rpc.method": "GetFeature",
               "rpc.service": "routeguide.RouteGuide",
-              "rpc.system": :grpc
+              "rpc.system": :grpc,
+	      "rpc.grpc.status_code": 0
             }} = attributes
   end
 
