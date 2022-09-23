@@ -55,7 +55,8 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
                     span(
                       name: "routeguide.RouteGuide/GetFeature",
                       kind: :client,
-                      attributes: attributes
+                      attributes: attributes,
+                      events: events
                     )}
 
     assert {_, _, _, _,
@@ -66,8 +67,11 @@ defmodule OpenTelemetryGRPC.Interceptors.Client.OpenTelemetryTest do
               "rpc.method": "GetFeature",
               "rpc.service": "routeguide.RouteGuide",
               "rpc.system": :grpc,
-	      "rpc.grpc.status_code": 0
+              "rpc.grpc.status_code": 0
             }} = attributes
+
+    assert {_, _, _, _, _,
+            [{:event, _, :message, {:attributes, _, _, _, %{"message.type": "SENT"}}}]} = events
   end
 
   defp setup_opentelemetry(_context) do
