@@ -1,6 +1,10 @@
 defmodule GRPC.Client.Interceptors.OpenTelemetry do
   @moduledoc """
-  TODO: add doc.
+  OTEL interceptor.
+
+  This interceptor will create a span per grpc unary call by following [1].
+
+  [1] https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/rpc.md
   """
 
   alias GRPC.Client.Stream
